@@ -1,0 +1,23 @@
+{
+  "name": "smart_bottle",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OrBin/Smart_Bottle.git"
+  },
+  "author": "Or Bin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OrBin/Smart_Bottle/issues"
+  },
+  "homepage": "https://github.com/OrBin/Smart_Bottle#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-tap": "^1.0.1"
+  }
+}
