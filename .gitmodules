@@ -1,6 +1,6 @@
-[submodule "micropython-max7219"]
-	path = micropython-max7219
+[submodule "submodules/micropython-max7219"]
+	path = submodules/micropython-max7219
 	url = https://github.com/mcauser/micropython-max7219.git
-[submodule "python_lcd"]
-	path = python_lcd
+[submodule "submodules/python_lcd"]
+	path = submodules/python_lcd
 	url = https://github.com/dhylands/python_lcd.git
