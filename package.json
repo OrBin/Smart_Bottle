@@ -18,6 +18,6 @@
   "homepage": "https://github.com/OrBin/Smart_Bottle#readme",
   "devDependencies": {
     "gulp": "^3.9.1",
-    "gulp-tap": "^1.0.1"
+    "gulp-exec": "^3.0.1"
   }
 }

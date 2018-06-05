@@ -1,6 +1,6 @@
-var gulp = require('gulp');
-var tap = require('gulp-tap');
 var path = require('path');
+var gulp = require('gulp');
+var exec = require('gulp-exec');
 
 gulp.task('build', function() {
 
@@ -16,12 +16,15 @@ gulp.task('flash', ['build'], function() {
 
     process.chdir('./build');
 
-    gulp.src('./*')
-        .pipe(tap(function(file, t) {
-            let relativePath = path.relative('.', file.path);
-            console.log('Flashing', relativePath);
-            // TODO actually flash the files
-        }));
+    var options = {
+        continueOnError: false, // default = false, true means don't emit error event
+        pipeStdout: false, // default = false, true means stdout is written to file.contents
+        devicePort: '/dev/ttyUSB0' // content passed to lodash.template()
+    };
+
+    return gulp.src('./*')
+        .pipe(exec('echo <%= file.path %> ', options))
+        .pipe(exec('/opt/anaconda3/bin/ampy --port <%= options.devicePort %> put <%= file.path %> ', options));
 
 });
 
