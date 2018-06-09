@@ -12,7 +12,7 @@ gulp.task('build', function() {
 
 });
 
-gulp.task('flash', ['build'], function() {
+gulp.task('flash', function() {
 
     process.chdir('./build');
 
