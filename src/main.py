@@ -1,27 +1,17 @@
 import utime
 from machine import Pin, PWM, SPI
-import max7219
+from onewire import OneWire
+from ds18x20 import DS18X20
 from nodemcu_gpio_lcd import GpioLcd
+from max7219 import Matrix8x8
 
 
-lcd = None
-led_matrix = None
-buzzer = None
-led = None
+ds_sensor = DS18X20(OneWire(Pin(12)))  # D6
 
+# scan for devices on the bus
+rom = ds_sensor.scan()[0]
 
-def initialize_components():
+# Convert temperature to Celsius
+ds_sensor.convert_temp()
 
-    lcd = GpioLcd(rs_pin=Pin(16),
-                  enable_pin=Pin(5),
-                  d4_pin=Pin(4),
-                  d5_pin=Pin(0),
-                  d6_pin=Pin(2),
-                  d7_pin=Pin(12),
-                  num_lines=2, num_columns=20)
-
-    spi = SPI(1, baudrate=10000000, polarity=0, phase=0)
-    led_matrix = max7219.Matrix8x8(spi, Pin(15), 1)
-    led_matrix.brightness(0)  # 0-15
-    led_matrix.fill(0)
-
+print('Temperature (Celsius, waterproof sensor):', ds_sensor.read_temp(rom))
