@@ -18,3 +18,11 @@ print('Temperature (Celsius, waterproof sensor):', wp_temp_sensor.read_temp(rom)
 
 photoresistor = ADC(0)  #A0
 print('Photoresistor value (0 to 1024):', photoresistor.read())
+
+
+red = Pin(16, Pin.OUT)
+green = Pin(2, Pin.OUT)
+blue = Pin(13, Pin.OUT)
+red.off()
+blue.on()
+green.off()
