@@ -6,10 +6,10 @@ gulp.task('build', function() {
 
     gulp.src('./src/*').pipe(gulp.dest('./build/'));
 
-    gulp.src('./submodules/micropython-max7219/max7219.py').pipe(gulp.dest('./build/'));
-    gulp.src('./submodules/python_lcd/lcd/lcd_api.py').pipe(gulp.dest('./build/'));
-    gulp.src('./submodules/python_lcd/lcd/nodemcu_gpio_lcd.py').pipe(gulp.dest('./build/'));
-    gulp.src('./submodules/MPU6050-ESP8266-MicroPython/mpu6050.py').pipe(gulp.dest('./build/'));
+    //gulp.src('./submodules/micropython-max7219/max7219.py').pipe(gulp.dest('./build/'));
+    //gulp.src('./submodules/python_lcd/lcd/lcd_api.py').pipe(gulp.dest('./build/'));
+    //gulp.src('./submodules/python_lcd/lcd/nodemcu_gpio_lcd.py').pipe(gulp.dest('./build/'));
+    //gulp.src('./submodules/MPU6050-ESP8266-MicroPython/mpu6050.py').pipe(gulp.dest('./build/'));
 
 });
 
