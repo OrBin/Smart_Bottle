@@ -2,6 +2,7 @@ import utime
 from machine import Pin, PWM, SPI, ADC
 from onewire import OneWire
 from ds18x20 import DS18X20
+from dht import DHT11
 #from nodemcu_gpio_lcd import GpioLcd
 #from max7219 import Matrix8x8
 
@@ -16,7 +17,7 @@ rom = wp_temp_sensor.scan()[0]
 # Convert temperature to Celsius
 wp_temp_sensor.convert_temp()
 
-print('Temperature (Celsius, waterproof sensor):', wp_temp_sensor.read_temp(rom))
+print('Temperature (Celsius, waterproof internal sensor):', wp_temp_sensor.read_temp(rom))
 
 photoresistor = ADC(0)  #A0
 print('Photoresistor value (0 to 1024):', photoresistor.read())
@@ -45,3 +46,14 @@ for i in tune:
 
     utime.sleep_ms(50)
 
+
+dht_sensor = DHT11(Pin(4))
+
+try:
+    dht_sensor.measure()
+    print('Temperature (Celsius, external sensor):', dht_sensor.temperature())
+except OSError as os_error:
+    if os_error.args[0] == 110: # ETIMEDOUT
+        print("Cannot access sensor: timed out")
+    else:
+        print(os_error)
