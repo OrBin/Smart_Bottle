@@ -1,4 +1,7 @@
+import json
 import utime
+import urequests
+import network
 from machine import Pin, PWM, SPI, ADC
 from onewire import OneWire
 from ds18x20 import DS18X20
@@ -16,11 +19,12 @@ rom = wp_temp_sensor.scan()[0]
 
 # Convert temperature to Celsius
 wp_temp_sensor.convert_temp()
-
-print('Temperature (Celsius, waterproof internal sensor):', wp_temp_sensor.read_temp(rom))
+internal_temperature = wp_temp_sensor.read_temp(rom)
+print('Temperature (Celsius, waterproof internal sensor):', internal_temperature)
 
 photoresistor = ADC(0)  #A0
-print('Photoresistor value (0 to 1024):', photoresistor.read())
+light_level = photoresistor.read()
+print('Light level (0 to 1024):', light_level)
 
 
 red = Pin(16, Pin.OUT)
@@ -51,9 +55,49 @@ dht_sensor = DHT11(Pin(4))
 
 try:
     dht_sensor.measure()
-    print('Temperature (Celsius, external sensor):', dht_sensor.temperature())
+    external_temperature = dht_sensor.temperature()
+    print('Temperature (Celsius, external sensor):', external_temperature)
 except OSError as os_error:
     if os_error.args[0] == 110: # ETIMEDOUT
         print("Cannot access sensor: timed out")
     else:
         print(os_error)
+
+
+
+with open('config.json') as json_data:
+    config = json.load(json_data)
+
+def connect(timeout_sec=0):
+    sta_if = network.WLAN(network.STA_IF)
+    if not sta_if.isconnected():
+        sta_if.active(True)
+        sta_if.connect(config['wifi']['ssid'], config['wifi']['password'])
+        timeout_end = utime.time() + timeout_sec
+
+        while not sta_if.isconnected():
+            if utime.time() > timeout_end:
+                return False
+
+        return True
+
+
+headers = {
+    'Content-Type': 'application/json',
+}
+
+data = json.dumps({
+    'external-temperature': external_temperature,
+    'internal-temperature': internal_temperature,
+    'light-level': light_level,
+    #'water-level': water_level
+})
+
+url = 'http://things.ubidots.com/api/v1.6/devices/' + config['ubidots']['device'] + '?token=' + config['ubidots']['api_token']
+
+if not connect(config['wifi']['connection_timeout_sec']):
+    print("No connection, Skipping")
+    # TODO save data and send later (?)
+else:
+    response = urequests.post(url, headers=headers,  data=data)
+    print(response.json())
