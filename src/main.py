@@ -9,6 +9,7 @@ from dht import DHT11
 #from nodemcu_gpio_lcd import GpioLcd
 #from max7219 import Matrix8x8
 
+from buzzer_wrapper import BuzzerWrapper
 from notes import *
 
 
@@ -35,21 +36,8 @@ blue.on()
 green.off()
 
 
-# set up pin PWM timer for output to buzzer or speaker
-buzzer = PWM(Pin(12), freq=400)  # D6
-buzzer.duty(50)
-
-tune = [E4, 0] * 3
-
-for i in tune:
-    if i == 0:
-        buzzer.duty(0)  # 0% = 0/100 * 1024 = 0
-    else:
-        buzzer.freq(i)  # change frequency for change tone
-        buzzer.duty(307)  # 30% = 30/100 * 1024 = 307
-
-    utime.sleep_ms(50)
-
+bw = BuzzerWrapper(Pin(12))  # D6
+bw.play_drinking_notification()
 
 dht_sensor = DHT11(Pin(4))
 
