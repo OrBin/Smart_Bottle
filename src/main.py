@@ -2,26 +2,17 @@ import json
 import utime
 import urequests
 import network
-from machine import Pin, PWM, SPI, ADC
-from onewire import OneWire
-from ds18x20 import DS18X20
-from dht import DHT11
-#from nodemcu_gpio_lcd import GpioLcd
-#from max7219 import Matrix8x8
+from machine import Pin, ADC
 
 from buzzer_wrapper import BuzzerWrapper
+from temperature_wrapper import TemperatureWrapper
+from network_wrapper import NetworkWrapper
 from notes import *
 
 
-wp_temp_sensor = DS18X20(OneWire(Pin(14)))  # D5
 
-# scan for devices on the bus
-rom = wp_temp_sensor.scan()[0]
 
-# Convert temperature to Celsius
-wp_temp_sensor.convert_temp()
-internal_temperature = wp_temp_sensor.read_temp(rom)
-print('Temperature (Celsius, waterproof internal sensor):', internal_temperature)
+
 
 photoresistor = ADC(0)  #A0
 light_level = photoresistor.read()
@@ -35,41 +26,21 @@ red.off()
 blue.on()
 green.off()
 
+tw = TemperatureWrapper(internal_sensor_pin=Pin(14), external_sensor_pin=Pin(4))
+internal_temperature = tw.get_internal_temperature()
+print('Temperature (Celsius, waterproof internal sensor):', internal_temperature)
+external_temperature = tw.get_external_temperature()
+print('Temperature (Celsius, external sensor):', external_temperature)
 
 bw = BuzzerWrapper(Pin(12))  # D6
 bw.play_drinking_notification()
 
-dht_sensor = DHT11(Pin(4))
-
-try:
-    dht_sensor.measure()
-    external_temperature = dht_sensor.temperature()
-    print('Temperature (Celsius, external sensor):', external_temperature)
-except OSError as os_error:
-    if os_error.args[0] == 110: # ETIMEDOUT
-        print("Cannot access sensor: timed out")
-    else:
-        print(os_error)
-
-
-
 with open('config.json') as json_data:
     config = json.load(json_data)
 
-def connect(timeout_sec=0):
-    sta_if = network.WLAN(network.STA_IF)
-    if not sta_if.isconnected():
-        sta_if.active(True)
-        sta_if.connect(config['wifi']['ssid'], config['wifi']['password'])
-        timeout_end = utime.time() + timeout_sec
-
-        while not sta_if.isconnected():
-            if utime.time() > timeout_end:
-                return False
-
-        return True
 
 
+nw = NetworkWrapper(wifi_ssid=config['wifi']['ssid'], wifi_password=config['wifi']['password'])
 headers = {
     'Content-Type': 'application/json',
 }
@@ -83,7 +54,7 @@ data = json.dumps({
 
 url = 'http://things.ubidots.com/api/v1.6/devices/' + config['ubidots']['device'] + '?token=' + config['ubidots']['api_token']
 
-if not connect(config['wifi']['connection_timeout_sec']):
+if not nw.connect_wifi(config['wifi']['connection_timeout_sec']):
     print("No connection, Skipping")
     # TODO save data and send later (?)
 else:
