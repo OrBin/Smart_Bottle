@@ -19,9 +19,9 @@ light_level = photoresistor.read()
 print('Light level (0 to 1024):', light_level)
 
 
-red = Pin(16, Pin.OUT)
-green = Pin(2, Pin.OUT)
-blue = Pin(13, Pin.OUT)
+red = Pin(16, Pin.OUT)  # D0
+green = Pin(2, Pin.OUT)  # D4
+blue = Pin(12, Pin.OUT)  # D6
 red.off()
 blue.on()
 green.off()
@@ -32,7 +32,7 @@ print('Temperature (Celsius, waterproof internal sensor):', internal_temperature
 external_temperature = tw.get_external_temperature()
 print('Temperature (Celsius, external sensor):', external_temperature)
 
-bw = BuzzerWrapper(Pin(12))  # D6
+bw = BuzzerWrapper(Pin(5))  # D1
 bw.play_drinking_notification()
 
 with open('config.json') as json_data:
