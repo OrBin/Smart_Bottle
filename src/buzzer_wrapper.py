@@ -7,7 +7,7 @@ class BuzzerWrapper:
     def __init__(self, pin):
         # set up pin PWM timer for output to buzzer or speaker
         self.buzzer = PWM(pin, freq=400)
-        self.buzzer.duty(50)
+        self.buzzer.duty(0)
 
     def play_drinking_notification(self):
         tune = [E4, 0] * 3
