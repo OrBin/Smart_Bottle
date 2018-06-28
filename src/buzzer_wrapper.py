@@ -1,6 +1,6 @@
 import utime
 from machine import PWM
-from notes import *
+from notes import E4
 
 
 class BuzzerWrapper:
