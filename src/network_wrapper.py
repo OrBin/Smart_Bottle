@@ -11,22 +11,24 @@ class NetworkWrapper:
         self.wifi_connection_timeout_sec = wifi_config['connection_timeout_sec']
         self.ubidots_device = ubidots_config['device']
         self.ubidots_api_token = ubidots_config['api_token']
+        self.wifi = network.WLAN(network.STA_IF)
 
     def connect_wifi(self, timeout_sec=None):
         if timeout_sec is None:
             timeout_sec = self.wifi_connection_timeout_sec
 
-        sta_if = network.WLAN(network.STA_IF)
-        if not sta_if.isconnected():
-            sta_if.active(True)
-            sta_if.connect(self.wifi_ssid, self.wifi_password)
-            timeout_end = utime.time() + timeout_sec
-
-            while not sta_if.isconnected():
-                if utime.time() > timeout_end:
-                    return False
-
+        if self.wifi.isconnected():
             return True
+
+        self.wifi.active(True)
+        self.wifi.connect(self.wifi_ssid, self.wifi_password)
+        timeout_end = utime.time() + timeout_sec
+
+        while not self.wifi.isconnected():
+            if utime.time() > timeout_end:
+                return False
+
+        return True
 
     def send_sensors_data(self, sensors_data):
         headers = {
