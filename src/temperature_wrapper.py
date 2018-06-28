@@ -1,3 +1,4 @@
+import utime
 from onewire import OneWire
 from ds18x20 import DS18X20
 from dht import DHT11
@@ -10,12 +11,14 @@ class TemperatureWrapper:
         # scan for devices on the bus
         self.rom = self.internal_sensor.scan()[0]
 
-        # Convert temperature to Celsius
-        self.internal_sensor.convert_temp()
-
         self.external_sensor = DHT11(external_sensor_pin)
 
     def get_internal_temperature(self):
+        # convert_temp() must be executed to initiate a temperature reading,
+        # then wait at least 750ms before reading the value.
+
+        self.internal_sensor.convert_temp()
+        utime.sleep_ms(750)
         return self.internal_sensor.read_temp(self.rom)
 
     def get_external_temperature(self):

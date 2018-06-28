@@ -1,4 +1,5 @@
 import json
+import utime
 
 from components import Components
 from network_wrapper import NetworkWrapper
@@ -13,13 +14,17 @@ components = Components()
 components.rgb_led.set_colors(False, False, True)
 components.buzzer.play_drinking_notification()
 
-periodic_sensors_data = components.measure_from_periodic_sensors()
 
-triggerred_sensors_data = {
-    #'water-level': water_level
-}
+while True:
 
-all_sensors_data = dict(periodic_sensors_data)
-all_sensors_data.update(triggerred_sensors_data)
+    periodic_sensors_data = components.measure_from_periodic_sensors()
+    triggerred_sensors_data = {
+        #'water-level': water_level
+    }
 
-nw.try_sending_sensors_data(all_sensors_data)
+    all_sensors_data = dict(periodic_sensors_data)
+    all_sensors_data.update(triggerred_sensors_data)
+
+    nw.try_sending_sensors_data(all_sensors_data)
+
+    utime.sleep(config['behavior']['measurements_interval_sec'])
