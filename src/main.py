@@ -1,7 +1,4 @@
 import json
-import utime
-import urequests
-import network
 from machine import Pin, ADC
 
 from buzzer_wrapper import BuzzerWrapper
@@ -40,23 +37,16 @@ with open('config.json') as json_data:
 
 
 
-nw = NetworkWrapper(wifi_ssid=config['wifi']['ssid'], wifi_password=config['wifi']['password'])
-headers = {
-    'Content-Type': 'application/json',
-}
-
-data = json.dumps({
-    'external-temperature': external_temperature,
-    'internal-temperature': internal_temperature,
-    'light-level': light_level,
-    #'water-level': water_level
-})
-
-url = 'http://things.ubidots.com/api/v1.6/devices/' + config['ubidots']['device'] + '?token=' + config['ubidots']['api_token']
+nw = NetworkWrapper(wifi_config=config['wifi'], ubidots_config=config['ubidots'])
 
 if not nw.connect_wifi(config['wifi']['connection_timeout_sec']):
     print("No connection, Skipping")
     # TODO save data and send later (?)
 else:
-    response = urequests.post(url, headers=headers,  data=data)
+    response = nw.send_sensors_data({
+        'external-temperature': external_temperature,
+        'internal-temperature': internal_temperature,
+        'light-level': light_level,
+        #'water-level': water_level
+    })
     print(response.json())
