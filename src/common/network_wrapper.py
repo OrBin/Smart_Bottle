@@ -4,7 +4,13 @@ import network
 import json
 
 
+HEADERS = {
+    'Content-Type': 'application/json',
+}
+
+
 class NetworkWrapper:
+
     def __init__(self, wifi_config, ubidots_config):
         self.wifi_ssid = wifi_config['ssid']
         self.wifi_password = wifi_config['password']
@@ -33,14 +39,10 @@ class NetworkWrapper:
         return True
 
     def send_sensors_data(self, sensors_data):
-        headers = {
-            'Content-Type': 'application/json',
-        }
-
         url = 'http://things.ubidots.com/api/v1.6/devices/' + self.ubidots_device + \
               '?token=' + self.ubidots_api_token
 
-        response = urequests.post(url, headers=headers, data=json.dumps(sensors_data))
+        response = urequests.post(url, headers=HEADERS, data=json.dumps(sensors_data))
         return response
 
     def try_sending_sensors_data(self, sensors_data, timeout_sec=None):
@@ -51,27 +53,19 @@ class NetworkWrapper:
             print(response.json())
 
     def _get_single_sensor_data(self, sensor_label):
-        headers = {
-            'Content-Type': 'application/json',
-        }
-
         url = 'http://things.ubidots.com/api/v1.6/devices/' + self.ubidots_device + \
               '/' + sensor_label + '/lv' + \
               '?token=' + self.ubidots_api_token
 
-        response = urequests.get(url, headers=headers)
+        response = urequests.get(url, headers=HEADERS)
         return response.text
 
 
     def get_variables_list(self):
-        headers = {
-            'Content-Type': 'application/json',
-        }
-
         url = 'http://things.ubidots.com/api/v1.6/datasources/' + self.ubidots_device_id + \
               '/variables?token=' + self.ubidots_api_token
 
-        response = urequests.get(url, headers=headers)
+        response = urequests.get(url, headers=HEADERS)
         results = response.json()
 
         return [variable['label'] for variable in results['results']]
@@ -89,5 +83,13 @@ class NetworkWrapper:
 
             for variable_label in self.variables:
                 sensors_data[variable_label] = self._get_single_sensor_data(variable_label)
+
+            url = 'http://things.ubidots.com/api/v1.6/devices/' + self.ubidots_device + \
+                  '/water-level/values' + \
+                  '?token=' + self.ubidots_api_token
+
+            water_level_response = urequests.get(url, headers=HEADERS)
+            water_level_results = water_level_response.json()
+            sensors_data['last-drinking-timestamp'] = water_level_results['results'][0]['timestamp']
 
             return sensors_data
