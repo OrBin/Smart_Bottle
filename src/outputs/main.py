@@ -15,16 +15,9 @@ components.rgb_led.set_colors(False, False, True)
 components.buzzer.play_drinking_notification()
 
 
+
 while True:
 
-    periodic_sensors_data = components.measure_from_periodic_sensors()
-    triggerred_sensors_data = {
-        #'water-level': water_level
-    }
-
-    all_sensors_data = dict(periodic_sensors_data)
-    all_sensors_data.update(triggerred_sensors_data)
-
-    nw.try_sending_sensors_data(all_sensors_data)
-
+    sensors_data = nw.get_sensors_data()
+    print(sensors_data)
     utime.sleep(config['behavior']['measurements_interval_sec'])
