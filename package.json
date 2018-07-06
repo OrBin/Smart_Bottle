@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/OrBin/Smart_Bottle#readme",
   "devDependencies": {
+    "fancy-log": "^1.3.2",
     "gulp": "^3.9.1",
     "gulp-exec": "^3.0.1"
   }
