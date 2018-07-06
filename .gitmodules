@@ -1,3 +1,6 @@
 [submodule "submodules/MPU6050-ESP8266-MicroPython"]
 	path = submodules/MPU6050-ESP8266-MicroPython
 	url = https://github.com/adamjezek98/MPU6050-ESP8266-MicroPython.git
+[submodule "submodules/micropython-tm1637"]
+	path = submodules/micropython-tm1637
+	url = https://github.com/mcauser/micropython-tm1637.git

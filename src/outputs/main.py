@@ -41,7 +41,7 @@ while True:
                                           float(sensors_data['external-temperature']))
     components.rgb_led.set_colors(r, g, b)
 
-    print(sensors_data['water-level'])
+    components.seven_segment.number(int(sensors_data['water-level']))
 
     utime.sleep(config['behavior']['measurements_interval_sec'])
 

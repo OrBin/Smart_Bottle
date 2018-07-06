@@ -45,6 +45,8 @@ gulp.task('build-outputs', function() {
     gulp.src('./src/common/*').pipe(gulp.dest('./build/outputs/'));
     gulp.src('./src/outputs/*').pipe(gulp.dest('./build/outputs/'));
 
+    gulp.src('./submodules/micropython-tm1637/tm1637.py').pipe(gulp.dest('./build/'));
+
 });
 
 function getFlashTask(buildDirectory) {
