@@ -36,7 +36,7 @@ gulp.task('build-inputs', function() {
     gulp.src('./src/common/*').pipe(gulp.dest('./build/inputs/'));
     gulp.src('./src/inputs/*').pipe(gulp.dest('./build/inputs/'));
 
-    //gulp.src('./submodules/MPU6050-ESP8266-MicroPython/mpu6050.py').pipe(gulp.dest('./build/'));
+    //gulp.src('./submodules/MPU6050-ESP8266-MicroPython/mpu6050.py').pipe(gulp.dest('./build/inputs/'));
 
 });
 
@@ -45,7 +45,7 @@ gulp.task('build-outputs', function() {
     gulp.src('./src/common/*').pipe(gulp.dest('./build/outputs/'));
     gulp.src('./src/outputs/*').pipe(gulp.dest('./build/outputs/'));
 
-    gulp.src('./submodules/micropython-tm1637/tm1637.py').pipe(gulp.dest('./build/'));
+    gulp.src('./submodules/micropython-tm1637/tm1637.py').pipe(gulp.dest('./build/outputs/'));
 
 });
 

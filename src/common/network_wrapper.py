@@ -1,7 +1,6 @@
 import utime
 import urequests
-import network
-import json
+from network import WLAN, STA_IF
 
 
 HEADERS = {
@@ -18,7 +17,7 @@ class NetworkWrapper:
         self.ubidots_api_token = ubidots_config['api_token']
         self.ubidots_device = ubidots_config['device']
         self.ubidots_device_id = ubidots_config['device_id']
-        self.wifi = network.WLAN(network.STA_IF)
+        self.wifi = WLAN(STA_IF)
         self.variables = None
 
     def connect_wifi(self, timeout_sec=None):
@@ -39,6 +38,7 @@ class NetworkWrapper:
         return True
 
     def send_sensors_data(self, sensors_data):
+        import json
         url = 'http://things.ubidots.com/api/v1.6/devices/' + self.ubidots_device + \
               '?token=' + self.ubidots_api_token
 
@@ -51,7 +51,6 @@ class NetworkWrapper:
             return False
         else:
             response = self.send_sensors_data(sensors_data)
-            print(response.json())
             return True
 
 

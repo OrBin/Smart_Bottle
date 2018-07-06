@@ -19,4 +19,3 @@ class BuzzerWrapper:
                 self.buzzer.duty(307)  # 30% = 30/100 * 1024 = 307
 
             sleep_ms(50)
-
