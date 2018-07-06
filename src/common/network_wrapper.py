@@ -54,23 +54,13 @@ class NetworkWrapper:
             print(response.json())
             return True
 
-    def _get_single_sensor_data(self, sensor_label):
-        url = 'http://things.ubidots.com/api/v1.6/devices/' + self.ubidots_device + \
-              '/' + sensor_label + '/lv' + \
-              '?token=' + self.ubidots_api_token
 
-        response = urequests.get(url, headers=HEADERS)
-        return response.text
-
-
-    def get_variables_list(self):
+    def _get_measured_variables_data(self):
         url = 'http://things.ubidots.com/api/v1.6/datasources/' + self.ubidots_device_id + \
-              '/variables?token=' + self.ubidots_api_token
+              '/variables?token=' + self.ubidots_api_token + '&tag=measured'
 
         response = urequests.get(url, headers=HEADERS)
-        results = response.json()
-
-        return [variable['label'] for variable in results['results']]
+        return response.json()['results']
 
     def get_sensors_data(self, timeout_sec=None):
 
@@ -78,20 +68,11 @@ class NetworkWrapper:
             print("No connection, Skipping")
         else:
 
-            if not self.variables:
-                self.variables = self.get_variables_list()
+            results = self._get_measured_variables_data()
 
-            sensors_data = {}
+            sensors_data = { variable['label']: variable['last_value']['value'] for variable in results }
 
-            for variable_label in self.variables:
-                sensors_data[variable_label] = self._get_single_sensor_data(variable_label)
-
-            url = 'http://things.ubidots.com/api/v1.6/devices/' + self.ubidots_device + \
-                  '/water-level/values' + \
-                  '?token=' + self.ubidots_api_token
-
-            water_level_response = urequests.get(url, headers=HEADERS)
-            water_level_results = water_level_response.json()
-            sensors_data['last-drinking-timestamp'] = water_level_results['results'][0]['timestamp']
+            water_level_results = [variable for variable in results if variable['label'] == 'water-level'][0]
+            sensors_data['last-drinking-timestamp'] = water_level_results['last_value']['timestamp']
 
             return sensors_data
