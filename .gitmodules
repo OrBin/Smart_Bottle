@@ -1,9 +1,3 @@
-[submodule "submodules/micropython-max7219"]
-	path = submodules/micropython-max7219
-	url = https://github.com/mcauser/micropython-max7219.git
-[submodule "submodules/python_lcd"]
-	path = submodules/python_lcd
-	url = https://github.com/dhylands/python_lcd.git
 [submodule "submodules/MPU6050-ESP8266-MicroPython"]
 	path = submodules/MPU6050-ESP8266-MicroPython
 	url = https://github.com/adamjezek98/MPU6050-ESP8266-MicroPython.git
