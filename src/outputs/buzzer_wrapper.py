@@ -1,6 +1,5 @@
-import utime
+from utime import sleep_ms
 from machine import PWM
-from notes import E4
 
 
 class BuzzerWrapper:
@@ -10,7 +9,7 @@ class BuzzerWrapper:
         self.buzzer.duty(0)
 
     def play_drinking_notification(self):
-        tune = [E4, 0] * 3
+        tune = [330, 0] * 3  # E4 is 330 hz
 
         for i in tune:
             if i == 0:
@@ -19,5 +18,5 @@ class BuzzerWrapper:
                 self.buzzer.freq(i)  # change frequency for change tone
                 self.buzzer.duty(307)  # 30% = 30/100 * 1024 = 307
 
-            utime.sleep_ms(50)
+            sleep_ms(50)
 
