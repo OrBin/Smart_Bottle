@@ -48,9 +48,11 @@ class NetworkWrapper:
     def try_sending_sensors_data(self, sensors_data, timeout_sec=None):
         if not self.connect_wifi(timeout_sec):
             print("No connection, Skipping")
+            return False
         else:
             response = self.send_sensors_data(sensors_data)
             print(response.json())
+            return True
 
     def _get_single_sensor_data(self, sensor_label):
         url = 'http://things.ubidots.com/api/v1.6/devices/' + self.ubidots_device + \

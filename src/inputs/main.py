@@ -12,11 +12,13 @@ nw = NetworkWrapper(wifi_config=config['wifi'], ubidots_config=config['ubidots']
 
 components = Components()
 
-while True:
+bottle_capacity = config['behavior']['bottle_capacity_ml']
 
+while True:
     periodic_sensors_data = components.measure_from_periodic_sensors()
     triggerred_sensors_data = {
-        #'water-level': water_level
+        'water-level': 380, # Currently for testing
+        'bottle-capacity': bottle_capacity
     }
 
     all_sensors_data = dict(periodic_sensors_data)
