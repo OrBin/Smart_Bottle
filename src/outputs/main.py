@@ -36,17 +36,25 @@ last_notification_timestamp_sec = 0
 while True:
     sensors_data = nw.get_sensors_data()
 
+    # Color-by-temperature LED
     r, g, b = calculate_temperature_color(float(sensors_data['internal-temperature']),
                                           float(sensors_data['external-temperature']))
     components.rgb_led.set_colors(r, g, b)
 
+    # Water level display
     components.seven_segment.number(int(sensors_data['water-level']))
 
+    # Drinking notification
     if time_utils.check_drinking_notification_required(sensors_data['last-drinking-timestamp'] // 1000,
                                             last_notification_timestamp_sec,
                                             config['behavior']['required_drinking_frequency_minutes'] * 60):
         components.buzzer.play_drinking_notification()
         last_notification_timestamp_sec = time_utils.unix_time()
 
-    sleep(config['behavior']['measurements_interval_sec'])
+    # Night light
+    if sensors_data['light-level'] < config['behavior']['night_light_threshold']:
+        components.led.on()
+    else:
+        components.led.off()
 
+    sleep(config['behavior']['measurements_interval_sec'])

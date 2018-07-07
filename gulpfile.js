@@ -4,6 +4,8 @@ var gulp = require('gulp');
 var exec = require('gulp-exec');
 var log = require('fancy-log');
 
+const PYMINIFIER_PATH = '/opt/anaconda3/bin/pyminifier';
+const AMPY_PATH = '/opt/anaconda3/bin/ampy';
 const FLASH_OPTIONS = {
     continueOnError: false, // default = false, true means don't emit error event
     pipeStdout: false, // default = false, true means stdout is written to file.contents
@@ -49,18 +51,36 @@ gulp.task('build-outputs', function() {
 
 });
 
+function getMinificationTask(buildDirectory) {
+    return function() {
+        let minificationCommand = PYMINIFIER_PATH + ' --use-tabs' +
+            ' --destdir ' + buildDirectory +
+            ' --obfuscate ' + buildDirectory + '/*';
+        let stdout = childProcess.execSync(minificationCommand);
+        let outputLines = stdout.toString().split('\n').slice(0, -1);
+
+        for (let i = 0; i < outputLines.length; i++) {
+          log('pyminifier:', outputLines[i]);
+        }
+    }
+}
+
 function getFlashTask(buildDirectory) {
     return function() {
         process.chdir(buildDirectory);
 
         return gulp.src('./*')
             .pipe(exec('echo <%= file.path %> ', FLASH_OPTIONS))
-            .pipe(exec('/opt/anaconda3/bin/ampy --port <%= options.devicePort %> put <%= file.path %> ', FLASH_OPTIONS));
+            .pipe(exec(AMPY_PATH + ' --port <%= options.devicePort %> put <%= file.path %> ', FLASH_OPTIONS));
     }
 }
 
-gulp.task('flash-inputs', ['kill-microrepl'], getFlashTask('./build/inputs'));
-gulp.task('flash-outputs', ['kill-microrepl'], getFlashTask('./build/outputs'));
+
+gulp.task('minify-inputs', getMinificationTask('./build/inputs'));
+gulp.task('minify-outputs', getMinificationTask('./build/outputs'));
+
+gulp.task('flash-inputs', ['kill-microrepl', 'minify-inputs'], getFlashTask('./build/inputs'));
+gulp.task('flash-outputs', ['kill-microrepl', 'minify-outputs'], getFlashTask('./build/outputs'));
 
 gulp.task('inputs', ['build-inputs', 'flash-inputs']);
 gulp.task('outputs', ['build-outputs', 'flash-outputs']);
