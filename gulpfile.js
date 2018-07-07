@@ -55,7 +55,7 @@ function getMinificationTask(buildDirectory) {
     return function() {
         let minificationCommand = PYMINIFIER_PATH + ' --use-tabs' +
             ' --destdir ' + buildDirectory +
-            ' --obfuscate ' + buildDirectory + '/*';
+            ' --obfuscate ' + buildDirectory + '/*.py';
         let stdout = childProcess.execSync(minificationCommand);
         let outputLines = stdout.toString().split('\n').slice(0, -1);
 
@@ -75,11 +75,10 @@ function getFlashTask(buildDirectory) {
     }
 }
 
-
 gulp.task('minify-inputs', getMinificationTask('./build/inputs'));
 gulp.task('minify-outputs', getMinificationTask('./build/outputs'));
 
-gulp.task('flash-inputs', ['kill-microrepl', 'minify-inputs'], getFlashTask('./build/inputs'));
+gulp.task('flash-inputs', ['kill-microrepl'], getFlashTask('./build/inputs'));
 gulp.task('flash-outputs', ['kill-microrepl', 'minify-outputs'], getFlashTask('./build/outputs'));
 
 gulp.task('inputs', ['build-inputs', 'flash-inputs']);
