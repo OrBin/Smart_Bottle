@@ -1,3 +1,6 @@
 [submodule "submodules/micropython-tm1637"]
 	path = submodules/micropython-tm1637
 	url = https://github.com/mcauser/micropython-tm1637.git
+[submodule "submodules/micropython-hcsr04"]
+	path = submodules/micropython-hcsr04
+	url = https://github.com/rsc1975/micropython-hcsr04.git

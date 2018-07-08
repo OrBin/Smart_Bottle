@@ -38,7 +38,7 @@ gulp.task('build-inputs', function() {
     gulp.src('./src/common/*').pipe(gulp.dest('./build/inputs/'));
     gulp.src('./src/inputs/*').pipe(gulp.dest('./build/inputs/'));
 
-    //gulp.src('./submodules/MPU6050-ESP8266-MicroPython/mpu6050.py').pipe(gulp.dest('./build/inputs/'));
+    gulp.src('./submodules/micropython-hcsr04/hcsr04.py').pipe(gulp.dest('./build/inputs/'));
 
 });
 
