@@ -1,12 +1,12 @@
-import json
-import utime
+from json import load as json_load
+from utime import sleep
 
 from components import Components
 from network_wrapper import NetworkWrapper
 
 
 with open('config.json') as json_data:
-    config = json.load(json_data)
+    config = json_load(json_data)
 
 nw = NetworkWrapper(wifi_config=config['wifi'], ubidots_config=config['ubidots'])
 
@@ -20,4 +20,4 @@ while True:
 
     nw.try_sending_sensors_data(sensors_data)
 
-    utime.sleep(config['behavior']['measurements_interval_sec'])
+    sleep(config['behavior']['measurements_interval_sec'])

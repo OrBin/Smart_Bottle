@@ -1,4 +1,4 @@
-import math
+from math import sqrt
 from hcsr04 import HCSR04
 
 
@@ -21,7 +21,7 @@ class DistanceSensorWrapper:
         distances = distances[len(distances) * 7 // 8:]
 
         squared_distances = [d*d for d in distances]
-        rms = math.sqrt(sum(squared_distances) / len(squared_distances))
+        rms = sqrt(sum(squared_distances) / len(squared_distances))
 
         final_distance_cm = rms
         water_height_cm = self.bottle_height_cm - final_distance_cm

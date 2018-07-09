@@ -1,9 +1,11 @@
-import json
-from utime import sleep
+from json import load as json_load
+from gc import collect as gc_collect
 
 import time_utils
 from components import Components
 from network_wrapper import NetworkWrapper
+from utime import sleep
+
 
 def calculate_temperature_color(internal_temperature, external_temperature):
 
@@ -23,7 +25,7 @@ def calculate_temperature_color(internal_temperature, external_temperature):
             return (False, True, False)  # Good - Green light
 
 with open('config.json') as json_data:
-    config = json.load(json_data)
+    config = json_load(json_data)
 
 nw = NetworkWrapper(wifi_config=config['wifi'], ubidots_config=config['ubidots'])
 
@@ -56,5 +58,7 @@ while True:
         components.led.on()
     else:
         components.led.off()
+
+    gc_collect()
 
     sleep(config['behavior']['measurements_interval_sec'])

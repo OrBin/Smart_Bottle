@@ -1,8 +1,3 @@
-import utime
-import urequests
-from network import WLAN, STA_IF
-
-
 HEADERS = {
     'Content-Type': 'application/json',
 }
@@ -11,6 +6,7 @@ HEADERS = {
 class NetworkWrapper:
 
     def __init__(self, wifi_config, ubidots_config):
+        from network import WLAN, STA_IF
         self.wifi_ssid = wifi_config['ssid']
         self.wifi_password = wifi_config['password']
         self.wifi_connection_timeout_sec = wifi_config['connection_timeout_sec']
@@ -21,6 +17,7 @@ class NetworkWrapper:
         self.variables = None
 
     def connect_wifi(self, timeout_sec=None):
+        from utime import time
         if timeout_sec is None:
             timeout_sec = self.wifi_connection_timeout_sec
 
@@ -29,20 +26,21 @@ class NetworkWrapper:
 
         self.wifi.active(True)
         self.wifi.connect(self.wifi_ssid, self.wifi_password)
-        timeout_end = utime.time() + timeout_sec
+        timeout_end = time() + timeout_sec
 
         while not self.wifi.isconnected():
-            if utime.time() > timeout_end:
+            if time() > timeout_end:
                 return False
 
         return True
 
     def send_sensors_data(self, sensors_data):
-        import json
+        from urequests import post
+        from json import dumps as json_dumps
         url = 'http://things.ubidots.com/api/v1.6/devices/' + self.ubidots_device + \
               '?token=' + self.ubidots_api_token
 
-        response = urequests.post(url, headers=HEADERS, data=json.dumps(sensors_data))
+        response = post(url, headers=HEADERS, data=json_dumps(sensors_data))
         return response
 
     def try_sending_sensors_data(self, sensors_data, timeout_sec=None):
@@ -55,10 +53,10 @@ class NetworkWrapper:
 
 
     def _get_measured_variables_data(self):
-        url = 'http://things.ubidots.com/api/v1.6/datasources/' + self.ubidots_device_id + \
-              '/variables?token=' + self.ubidots_api_token + '&tag=measured'
-
-        response = urequests.get(url, headers=HEADERS)
+        from urequests import get
+        response = get(url='http://things.ubidots.com/api/v1.6/datasources/' + self.ubidots_device_id + \
+                                 '/variables?token=' + self.ubidots_api_token + '&tag=measured',
+                                 headers=HEADERS)
         return response.json()['results']
 
     def get_sensors_data(self, timeout_sec=None):
