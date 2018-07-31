@@ -49,7 +49,7 @@ pip install -r requirements.txt
 
 A configuration file `config.json` should be placed in directory `src/common/`.
 
-Here is an example for how the configuration file should look:
+Here is an example of how the configuration file should look:
 
 ```json
 {
