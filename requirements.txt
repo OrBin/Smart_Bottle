@@ -1,0 +1,2 @@
+ampy==1.2.6
+pyminifier==2.1
